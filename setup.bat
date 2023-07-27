@@ -3,7 +3,7 @@ echo off
 set path=%PATH%;%~dp0\Development\Tools\GnuWin32\bin;
 
 ECHO [SETUP.BAT] CLONE VCPKG
-rem git clone "https://github.com/Microsoft/vcpkg.git"
+git clone "https://github.com/Microsoft/vcpkg.git"
 
 ECHO [SETUP.BAT] BUILD VCPKG
 call "./vcpkg/bootstrap-vcpkg.bat"
