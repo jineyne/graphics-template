@@ -7,9 +7,9 @@ mkdir build
 cd build
 
 call "../Development/Tools/cmake-windows/bin/cmake.exe" -G "Ninja" ^
-    -DCMAKE_BUILD_TYPE=Release .. ^
+    -DCMAKE_BUILD_TYPE=Debug .. ^
     -DCMAKE_TOOLCHAIN_FILE="../vcpkg/scripts/buildsystems/vcpkg.cmake" ^
-    -DVCPKG_TARGET_TRIPLET="x64-windows"
+    -DVCPKG_TARGET_TRIPLET="x64-windows" 
 
 call ninja
 

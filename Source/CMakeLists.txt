@@ -23,3 +23,4 @@ PRIVATE
     glfw OpenGL::GL GLEW::GLEW
 
     spdlog::spdlog_header_only)
+
