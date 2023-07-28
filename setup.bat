@@ -13,7 +13,13 @@ ECHO [SETUP.BAT] INSTALL LIBRARIES
 "./vcpkg/vcpkg" install opengl:x64-windows
 "./vcpkg/vcpkg" install glew:x64-windows
 "./vcpkg/vcpkg" install freetype:x64-windows
+"./vcpkg/vcpkg" install freeimage:x64-windows
 "./vcpkg/vcpkg" install openal-soft:x64-windows
 "./vcpkg/vcpkg" install assimp:x64-windows
 "./vcpkg/vcpkg" install physx:x64-windows
 "./vcpkg/vcpkg" install spdlog:x64-windows
+"./vcpkg/vcpkg" install glm:x64-windows
+
+
+"./vcpkg/vcpkg" integrate install
+
