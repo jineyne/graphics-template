@@ -1,6 +1,7 @@
 #include <glfw/glfw3.h>
 #include <spdlog/spdlog.h>
 #include <FreeImagePlus.h>
+#include <alc.h>
 
 // glfw 에러 콜백 
 void glfwErrorCallback(int error, const char* description) {
@@ -28,6 +29,26 @@ int main() {
     spdlog::debug("Initialize FreeImage");
     FreeImage_Initialise();
 
+    spdlog::debug("Initialize OpenAL");
+    ALCdevice *alDevice = alcOpenDevice(NULL);
+    if (!alDevice) {
+        spdlog::critical("Failed to create openal device");
+        return -1;
+    }
+
+    ALCcontext *alContext;
+    alContext = alcCreateContext(alDevice, NULL);
+    if (!alContext) {
+        spdlog::critical("Failed to create openal context");
+        return -1;
+    }
+
+    if (!alcMakeContextCurrent(alContext)) {
+        spdlog::critical("Failed to set openal context");
+        return -1;
+    }
+
+
     spdlog::debug("Create window");
     // 윈도우 생성
     window = glfwCreateWindow(640, 480, "Hello, World!", NULL, NULL);
@@ -45,6 +66,11 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    spdlog::debug("Deinitialise OpenAL");
+    alcMakeContextCurrent(nullptr);
+    alcDestroyContext(alContext);
+    alcCloseDevice(alDevice);
 
     spdlog::debug("Deinitialise FreeImage");
     FreeImage_DeInitialise();
