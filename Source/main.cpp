@@ -1,5 +1,6 @@
 #include <glfw/glfw3.h>
 #include <spdlog/spdlog.h>
+#include <FreeImagePlus.h>
 
 // glfw 에러 콜백 
 void glfwErrorCallback(int error, const char* description) {
@@ -24,6 +25,9 @@ int main() {
 
     glfwSetErrorCallback(glfwErrorCallback);
 
+    spdlog::debug("Initialize FreeImage");
+    FreeImage_Initialise();
+
     spdlog::debug("Create window");
     // 윈도우 생성
     window = glfwCreateWindow(640, 480, "Hello, World!", NULL, NULL);
@@ -41,9 +45,12 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    spdlog::debug("Deinitialise FreeImage");
+    FreeImage_DeInitialise();
     
     // 종료
-    spdlog::debug("Finalizing GLFW");
+    spdlog::debug("Dinitialize GLFW");
     glfwTerminate();
 
     return 0;
