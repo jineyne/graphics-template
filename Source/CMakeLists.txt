@@ -14,7 +14,7 @@ find_package(GLEW REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp pch.h)
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE
     Freetype::Freetype
@@ -26,6 +26,8 @@ PRIVATE
     glfw OpenGL::GL GLEW::GLEW
 
     spdlog::spdlog_header_only glm::glm)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy
