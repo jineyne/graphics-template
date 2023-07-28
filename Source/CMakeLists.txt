@@ -14,7 +14,9 @@ find_package(GLEW REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp pch.h)
+include (Framework/CMakeSources.cmake)
+
+add_executable(${PROJECT_NAME} main.cpp ${FRAMEWORK_SOURCS})
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE
     Freetype::Freetype
@@ -28,6 +30,10 @@ PRIVATE
     spdlog::spdlog_header_only glm::glm)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>")
+
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy

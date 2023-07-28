@@ -1,11 +1,15 @@
 #include "pch.h"
 
+#include "Framework/CommandArgsParser.h"
+
 // glfw 에러 콜백 
 void glfwErrorCallback(int error, const char* description) {
     spdlog::error("GLFW Error ({0}): {1}", error, description);
 }
 
-int main() {
+int main(int argc, char **argv) {
+    CommandArgsParser::Get().parse(argc, argv);
+
 #ifdef DEBUG_MODE
     spdlog::set_level(spdlog::level::debug);
 #else
@@ -46,9 +50,14 @@ int main() {
     }
 
 
-    spdlog::debug("Create window");
+
+    size_t width = atoll(CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
+    size_t height = atoll(CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
+
+    spdlog::debug("Create window: {0}x{1}", width, height);
+
     // 윈도우 생성
-    window = glfwCreateWindow(640, 480, "Hello, World!", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Graphics Template", NULL, NULL);
     if (!window) {
         spdlog::critical("Failed to create GLFW window");
         glfwTerminate();
