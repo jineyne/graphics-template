@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Framework/CommandArgsParser.h"
+#include "Framework/Utility/CommandArgsParser.h"
 
 // glfw 에러 콜백 
 void glfwErrorCallback(int error, const char* description) {
@@ -8,7 +8,7 @@ void glfwErrorCallback(int error, const char* description) {
 }
 
 int main(int argc, char **argv) {
-    CommandArgsParser::Get().parse(argc, argv);
+    gt::CommandArgsParser::Get().parse(argc, argv);
 
 #ifdef DEBUG_MODE
     spdlog::set_level(spdlog::level::debug);
@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
 
 
 
-    size_t width = atoll(CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
-    size_t height = atoll(CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
+    size_t width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
+    size_t height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
 
     spdlog::debug("Create window: {0}x{1}", width, height);
 
