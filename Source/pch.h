@@ -42,7 +42,6 @@ extern "C" {
 #   include <sys/stat.h>
 }
 
-#include <glfw/glfw3.h>
 #include <spdlog/spdlog.h>
 #include <FreeImagePlus.h>
 #include <alc.h>

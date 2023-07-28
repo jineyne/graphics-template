@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <gl/glew.h>
+#include <glfw/glfw3.h>
 #include "Framework/Utility/CommandArgsParser.h"
 
 // glfw 에러 콜백 
@@ -26,6 +28,8 @@ int main(int argc, char **argv) {
     }
 
     glfwSetErrorCallback(glfwErrorCallback);
+    glewInit();
+
 
     spdlog::debug("Initialize FreeImage");
     FreeImage_Initialise();
@@ -69,6 +73,7 @@ int main(int argc, char **argv) {
     // 메인루프
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0, 1, 0, 1);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
