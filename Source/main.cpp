@@ -1,7 +1,4 @@
-#include <glfw/glfw3.h>
-#include <spdlog/spdlog.h>
-#include <FreeImagePlus.h>
-#include <alc.h>
+#include "pch.h"
 
 // glfw 에러 콜백 
 void glfwErrorCallback(int error, const char* description) {
