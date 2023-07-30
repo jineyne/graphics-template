@@ -1,7 +1,9 @@
 #include "pch.h"
 
-#include <gl/glew.h>
+#include <glad/glad.h>
 #include <glfw/glfw3.h>
+
+#include "Framework/Graphics/Renderer.h"
 #include "Framework/Utility/CommandArgsParser.h"
 
 // glfw 에러 콜백 
@@ -9,7 +11,7 @@ void glfwErrorCallback(int error, const char* description) {
     spdlog::error("GLFW Error ({0}): {1}", error, description);
 }
 
-int main(int argc, char **argv) {
+int entry(int argc, char **argv) {
     gt::CommandArgsParser::Get().parse(argc, argv);
 
 #ifdef DEBUG_MODE
@@ -18,18 +20,35 @@ int main(int argc, char **argv) {
     spdlog::set_level(spdlog::level::info);
 #endif
 
-    spdlog::debug("Initialize GLFW");
-
     // GLFW 초기화 
-    GLFWwindow *window = nullptr;
+    spdlog::debug("Initialize GLFW");
     if (!glfwInit()) {
         spdlog::critical("Failed to initialize GLFW");
         return -1;
     }
 
-    glfwSetErrorCallback(glfwErrorCallback);
-    glewInit();
+    size_t width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
+    size_t height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
 
+    spdlog::debug("Create window: {0}x{1}", width, height);
+
+    // 윈도우 생성
+    GLFWwindow *window = glfwCreateWindow(width, height, "Graphics Template", NULL, NULL);
+    if (!window) {
+        spdlog::critical("Failed to create GLFW window");
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    glfwSetErrorCallback(glfwErrorCallback);
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        spdlog::critical("Failed to initialize OpenGL");
+        return -1;
+    }
+
+    CHECK_GL_ERROR();
 
     spdlog::debug("Initialize FreeImage");
     FreeImage_Initialise();
@@ -51,29 +70,47 @@ int main(int argc, char **argv) {
     if (!alcMakeContextCurrent(alContext)) {
         spdlog::critical("Failed to set openal context");
         return -1;
-    }
+    } 
 
+    gt::Renderer renderer;
+    gt::VertexBuffer vbo;
 
+    gt::BufferLayout layout = {{
+        { gt::BufferType::Float3, false },
+    }};
+    vbo.setLayout(layout);
 
-    size_t width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
-    size_t height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
+    };  
+    vbo.write((uint8_t *) vertices, sizeof(vertices));
 
-    spdlog::debug("Create window: {0}x{1}", width, height);
+    gt::ShaderDesc desc{};
+    desc.vertexSource = "#version 330 core\n" \
+"layout (location = 0) in vec3 aPos;\n"
+"void main() {\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}";
+    desc.fragmentSource = "#version 330 core\n" 
+"out vec4 FragColor;\n"
+"void main() {\n"
+"    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"}";
 
-    // 윈도우 생성
-    window = glfwCreateWindow(width, height, "Graphics Template", NULL, NULL);
-    if (!window) {
-        spdlog::critical("Failed to create GLFW window");
-        glfwTerminate();
-        return -1;
-    }
+    gt::Shader shader(desc);
 
-    glfwMakeContextCurrent(window);
+    renderer.setShader(&shader);
+    renderer.setVertexBuffer(&vbo);
 
     // 메인루프
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0, 1, 0, 1);
+
+        renderer.draw(0, 3);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -93,3 +130,14 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+int main(int argc, char **argv) {
+    int success = false;
+
+    try {
+        success = entry(argc, argv);
+    } catch (std::exception e) {
+        spdlog::critical(e.what());
+    }
+
+    return success;
+}

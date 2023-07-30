@@ -8,7 +8,6 @@ find_package(assimp CONFIG REQUIRED)
 # graphics
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 
 # utility
 find_package(spdlog CONFIG REQUIRED)
@@ -25,7 +24,7 @@ PRIVATE
     unofficial::omniverse-physx-sdk::sdk
     assimp::assimp
 
-    glfw OpenGL::GL GLEW::GLEW
+    glfw OpenGL::GL glad
 
     spdlog::spdlog_header_only glm::glm)
 
@@ -35,7 +34,4 @@ target_include_directories(${PROJECT_NAME}
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>")
 
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy
-                           ${CMAKE_BINARY_DIR}/compile_commands.json
-                           ${CMAKE_SOURCE_DIR}/compile_commands.json)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json)

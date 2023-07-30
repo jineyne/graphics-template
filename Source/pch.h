@@ -1,5 +1,9 @@
 #pragma once
 
+#if defined (_MSC_VER)
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 #include <cassert>
 #include <cstdio>
 #include <ctime>
@@ -45,3 +49,4 @@ extern "C" {
 #include <spdlog/spdlog.h>
 #include <FreeImagePlus.h>
 #include <alc.h>
+

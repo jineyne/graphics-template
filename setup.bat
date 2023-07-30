@@ -11,7 +11,6 @@ call "./vcpkg/bootstrap-vcpkg.bat"
 ECHO [SETUP.BAT] INSTALL LIBRARIES
 "./vcpkg/vcpkg" install glfw3:x64-windows
 "./vcpkg/vcpkg" install opengl:x64-windows
-"./vcpkg/vcpkg" install glew:x64-windows
 "./vcpkg/vcpkg" install freetype:x64-windows
 "./vcpkg/vcpkg" install freeimage:x64-windows
 "./vcpkg/vcpkg" install openal-soft:x64-windows
