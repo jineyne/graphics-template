@@ -60,6 +60,7 @@ namespace gt {
 
     public:
         VertexBuffer();
+        ~VertexBuffer();
 
     public:
         void write(uint8_t *data, size_t size) override;

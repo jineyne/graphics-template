@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <gl/gl.h>
 
+#include "Renderer.h"
+
 namespace gt {
     static uint8_t getTypeSize(BufferType type) {
         switch (type) {
@@ -58,6 +60,9 @@ namespace gt {
     }
 
     VertexBuffer::VertexBuffer() : Buffer(GL_ARRAY_BUFFER) {}
+    VertexBuffer::~VertexBuffer() {
+        gt::Renderer::Instance().notifyVertexBufferDestroyed(this);
+    }
 
     void VertexBuffer::write(uint8_t *data, size_t size) {
         bind();

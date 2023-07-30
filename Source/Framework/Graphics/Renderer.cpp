@@ -1,9 +1,18 @@
-#include "Renderer.h"
-
 #include <glad/glad.h>
 #include <gl/gl.h>
 
+#include "Renderer.h"
+
+#include "spdlog/spdlog.h"
+
+#include "Framework/Utility/CommandArgsParser.h"
+
 namespace gt {
+    // glfw 에러 콜백 
+    void glfwErrorCallback(int error, const char* description) {
+        spdlog::error("GLFW Error ({0}): {1}", error, description);
+    }
+
     size_t Renderer::Hash::operator()(const VertexArrayObject &vao) const {
         size_t seed = 0;
 
@@ -71,6 +80,52 @@ namespace gt {
         CHECK_GL_ERROR();
     }
 
+    void Renderer::onStartUp() {
+    // GLFW 초기화 
+        spdlog::debug("Initialize GLFW");
+        if (!glfwInit()) {
+            throw invalid_state("Failed to initialize GLFW");
+        }
+
+        size_t width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
+        size_t height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
+
+        spdlog::debug("Create window: {0}x{1}", width, height);
+
+        // 윈도우 생성
+        window = glfwCreateWindow(width, height, "Graphics Template", NULL, NULL);
+        if (!window) {
+            glfwTerminate();
+            throw invalid_state("Failed to create GLFW window");
+        }
+
+        glfwMakeContextCurrent(window);
+
+        glfwSetErrorCallback(glfwErrorCallback);
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            throw invalid_state("Failed to initialize OpenGL");
+        }
+
+        CHECK_GL_ERROR();
+    }
+    
+    void Renderer::onShutDown() {
+        glfwDestroyWindow(window);
+
+        // 종료
+        spdlog::debug("Dinitialize GLFW");
+        glfwTerminate();
+    }
+
+    void Renderer::notifyVertexBufferDestroyed(VertexBuffer *buffer) {
+        VertexArrayObject vao { 0, { buffer } };
+
+        auto findIt = objects.find(vao);
+        if (findIt != objects.end()) {
+            objects.erase(findIt);
+        }
+    }
+
     const Renderer::VertexArrayObject &Renderer::findVertexArrayObject(VertexBuffer *buffer, const BufferLayout &layout) {
         VertexArrayObject vao { 0, { buffer } };
 
@@ -112,9 +167,18 @@ namespace gt {
                 break;
             }
 
-            glVertexAttribPointer(stride, element.getComponentCount(), type, GL_FALSE, element.size, (void*) 0);
-            CHECK_GL_ERROR();
+            void *ptr = (void *) element.offset;
 
+            bool isInteger = type == GL_SHORT || type == GL_UNSIGNED_SHORT || type == GL_INT ||
+                    type == GL_UNSIGNED_INT || type == GL_UNSIGNED_BYTE;
+            
+            if (isInteger) {
+                glVertexAttribIPointer(stride, element.getComponentCount(), type, element.size, ptr);
+                CHECK_GL_ERROR();
+            } else {
+                glVertexAttribPointer(stride, element.getComponentCount(), type, GL_FALSE, element.size, ptr);
+                CHECK_GL_ERROR();
+            }
             glEnableVertexAttribArray(i);  
             CHECK_GL_ERROR();
         }

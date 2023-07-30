@@ -10,7 +10,10 @@ set (GRAPHICS_SRCS
 
 set (UTILITY_SRCS
     "Framework/Utility/CommandArgsParser.cpp"
-    "Framework/Utility/CommandArgsParser.h")
+    "Framework/Utility/CommandArgsParser.h"
+    "Framework/Utility/Exceptions.cpp"
+    "Framework/Utility/Exceptions.h"
+    "Framework/Utility/Module.h")
 
 set (FRAMEWORK_SOURCS
     ${GRAPHICS_SRCS}
