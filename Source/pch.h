@@ -50,3 +50,8 @@ extern "C" {
 #include <FreeImagePlus.h>
 #include <alc.h>
 
+
+#define DEFINE_THIS_PTR(TYPE) \
+    private: std::weak_ptr<TYPE> _thisPtr; \
+    protected: void setThisPtr(const std::shared_ptr<TYPE> &ptr) { _thisPtr = ptr; } \
+    public: std::shared_ptr<TYPE> getThisPtr() const { return _thisPtr.lock(); }

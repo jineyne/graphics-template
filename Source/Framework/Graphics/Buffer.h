@@ -58,9 +58,14 @@ namespace gt {
         BufferLayout layout;
         uint32_t arrayId;
 
-    public:
+    protected:
         VertexBuffer();
+
+    public:
         ~VertexBuffer();
+
+    public:
+        static std::shared_ptr<VertexBuffer> New();
 
     public:
         void write(uint8_t *data, size_t size) override;
@@ -70,13 +75,20 @@ namespace gt {
 
         void setArrayId(uint32_t &id) { this->arrayId = id; }
         uint32_t getArrayId() const { return this->arrayId; }
+
+        DEFINE_THIS_PTR(VertexBuffer);
     };
 
     class IndexBuffer : public Buffer {
-    public:
+    protected:
         IndexBuffer();
 
     public:
+        static std::shared_ptr<IndexBuffer> New();
+
+    public:
         void write(uint8_t *data, size_t size) override;
+
+        DEFINE_THIS_PTR(IndexBuffer);
     };
 }

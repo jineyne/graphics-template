@@ -8,8 +8,15 @@ namespace gt {
     Shader::Shader(const ShaderDesc &desc) : desc(desc) {
         shaderId = glCreateProgram();
         CHECK_GL_ERROR();
+    }
 
-        compile();
+    std::shared_ptr<Shader> Shader::New(const ShaderDesc &desc) {
+        auto shader = std::shared_ptr<Shader>(new Shader(desc));
+        shader->setThisPtr(shader);
+
+        shader->compile();
+
+        return shader;
     }
 
     void Shader::compile() {

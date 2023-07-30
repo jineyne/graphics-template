@@ -49,12 +49,12 @@ int entry(int argc, char **argv) {
         } 
 
         gt::Renderer renderer;
-        gt::VertexBuffer vbo;
+        auto vbo = gt::VertexBuffer::New();
 
         gt::BufferLayout layout = {{
             { gt::BufferType::Float3, false },
         }};
-        vbo.setLayout(layout);
+        vbo->setLayout(layout);
 
         float vertices[] = {
              0.5f,  0.5f, 0.0f,  // 우측 상단
@@ -62,11 +62,11 @@ int entry(int argc, char **argv) {
             -0.5f, -0.5f, 0.0f,  // 좌측 하단
             -0.5f,  0.5f, 0.0f   // 좌측 상단
         };  
-        vbo.write((uint8_t *) vertices, sizeof(vertices));
+        vbo->write((uint8_t *) vertices, sizeof(vertices));
 
-        gt::IndexBuffer ibo;
+        auto ibo = gt::IndexBuffer::New();
         uint32_t indices[] = { 0, 1, 3, 1, 2, 3 };
-        ibo.write((uint8_t *) indices, sizeof(indices));
+        ibo->write((uint8_t *) indices, sizeof(indices));
 
         gt::ShaderDesc desc{};
         desc.vertexSource = "#version 330 core\n" \
@@ -80,11 +80,11 @@ int entry(int argc, char **argv) {
 "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}";
 
-        gt::Shader shader(desc);
+        auto shader = gt::Shader::New(desc);
 
-        renderer.setShader(&shader);
-        renderer.setVertexBuffer(&vbo);
-        renderer.setIndexBuffer(&ibo);
+        renderer.setShader(shader);
+        renderer.setVertexBuffer(vbo);
+        renderer.setIndexBuffer(ibo);
 
         // 메인루프
         while (window->isRunning()) {
@@ -104,7 +104,6 @@ int entry(int argc, char **argv) {
 
         spdlog::debug("Deinitialise FreeImage");
         FreeImage_DeInitialise();
-
     }
 
     gt::Renderer::ShutDown();

@@ -14,8 +14,11 @@ namespace gt {
         bool compiled;
         uint32_t shaderId;
 
-    public:
+    protected:
         Shader(const ShaderDesc &desc);
+
+    public:
+        static std::shared_ptr<Shader> New(const ShaderDesc &desc);
 
     public:
         void compile();
@@ -24,6 +27,8 @@ namespace gt {
     private:
         void checkCompileError(uint32_t id);
         void checkLinkError();
+
+        DEFINE_THIS_PTR(Shader);
     };
 }
 

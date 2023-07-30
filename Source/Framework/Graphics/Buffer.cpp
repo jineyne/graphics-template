@@ -61,7 +61,16 @@ namespace gt {
 
     VertexBuffer::VertexBuffer() : Buffer(GL_ARRAY_BUFFER) {}
     VertexBuffer::~VertexBuffer() {
-        gt::Renderer::Instance().notifyVertexBufferDestroyed(this);
+        if (!_thisPtr.expired()) {
+            gt::Renderer::Instance().notifyVertexBufferDestroyed(getThisPtr());
+        }
+    }
+
+    std::shared_ptr<VertexBuffer> VertexBuffer::New() {
+        auto buffer = std::shared_ptr<VertexBuffer>(new VertexBuffer());
+        buffer->setThisPtr(buffer);
+
+        return buffer;
     }
 
     void VertexBuffer::write(uint8_t *data, size_t size) {
@@ -72,6 +81,14 @@ namespace gt {
     }
 
     IndexBuffer::IndexBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER) {}
+
+
+    std::shared_ptr<IndexBuffer> IndexBuffer::New() {
+        auto buffer = std::shared_ptr<IndexBuffer>(new IndexBuffer());
+        buffer->setThisPtr(buffer);
+
+        return buffer;
+    }
 
     void IndexBuffer::write(uint8_t *data, size_t size) {
         bind();

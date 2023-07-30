@@ -62,15 +62,15 @@ namespace gt {
         return window;
     }
 
-    void Renderer::setVertexBuffer(VertexBuffer *buffer) {
+    void Renderer::setVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
         activeVertexBuffer = buffer;
     }
 
-    void Renderer::setIndexBuffer(IndexBuffer *buffer) {
+    void Renderer::setIndexBuffer(const std::shared_ptr<IndexBuffer> &buffer) {
         activeIndexBuffer = buffer;
     }
 
-    void Renderer::setShader(Shader *shader) {
+    void Renderer::setShader(const std::shared_ptr<Shader> &shader) {
         activeShader = shader;
     }
 
@@ -113,7 +113,7 @@ namespace gt {
         glfwTerminate();
     }
 
-    void Renderer::notifyVertexBufferDestroyed(VertexBuffer *buffer) {
+    void Renderer::notifyVertexBufferDestroyed(const std::shared_ptr<VertexBuffer> &buffer) {
         VertexArrayObject vao { 0, { buffer } };
 
         auto findIt = objects.find(vao);
@@ -122,7 +122,8 @@ namespace gt {
         }
     }
 
-    const Renderer::VertexArrayObject &Renderer::findVertexArrayObject(VertexBuffer *buffer, const BufferLayout &layout) {
+    const Renderer::VertexArrayObject &Renderer::findVertexArrayObject(const std::shared_ptr<VertexBuffer> &buffer,
+            const BufferLayout &layout) {
         VertexArrayObject vao { 0, { buffer } };
 
         auto findIt = objects.find(vao);
