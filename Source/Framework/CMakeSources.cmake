@@ -6,7 +6,10 @@ set (GRAPHICS_SRCS
     "Framework/Graphics/Renderer.cpp"
     "Framework/Graphics/Renderer.h"
     "Framework/Graphics/Shader.cpp"
-    "Framework/Graphics/Shader.h")
+    "Framework/Graphics/Shader.h"
+    "Framework/Graphics/Window.cpp"
+    "Framework/Graphics/Window.h"
+    )
 
 set (UTILITY_SRCS
     "Framework/Utility/CommandArgsParser.cpp"

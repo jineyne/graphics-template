@@ -1,7 +1,8 @@
+#include "Renderer.h"
+
 #include <glad/glad.h>
 #include <gl/gl.h>
-
-#include "Renderer.h"
+#include <GLFW/glfw3.h>
 
 #include "spdlog/spdlog.h"
 
@@ -41,6 +42,24 @@ namespace gt {
         }
 
         return true;
+    }
+
+    std::shared_ptr<Window> Renderer::initialize(const WindowDesc &desc) {
+        spdlog::debug("Create window: {0}: {1}x{2}", desc.title, desc.width, desc.height);
+
+        // 윈도우 생성
+        auto window = std::make_shared<Window>(desc);
+
+        glfwMakeContextCurrent((GLFWwindow *) window->getWindowPtr());
+
+        glfwSetErrorCallback(glfwErrorCallback);
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            throw invalid_state("Failed to initialize OpenGL");
+        }
+
+        CHECK_GL_ERROR();
+
+        return window;
     }
 
     void Renderer::setVertexBuffer(VertexBuffer *buffer) {
@@ -86,32 +105,9 @@ namespace gt {
         if (!glfwInit()) {
             throw invalid_state("Failed to initialize GLFW");
         }
-
-        size_t width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
-        size_t height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
-
-        spdlog::debug("Create window: {0}x{1}", width, height);
-
-        // 윈도우 생성
-        window = glfwCreateWindow(width, height, "Graphics Template", NULL, NULL);
-        if (!window) {
-            glfwTerminate();
-            throw invalid_state("Failed to create GLFW window");
-        }
-
-        glfwMakeContextCurrent(window);
-
-        glfwSetErrorCallback(glfwErrorCallback);
-        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-            throw invalid_state("Failed to initialize OpenGL");
-        }
-
-        CHECK_GL_ERROR();
     }
     
     void Renderer::onShutDown() {
-        glfwDestroyWindow(window);
-
         // 종료
         spdlog::debug("Dinitialize GLFW");
         glfwTerminate();

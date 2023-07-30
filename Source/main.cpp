@@ -18,7 +18,14 @@ int entry(int argc, char **argv) {
     gt::Renderer::StartUp();
 
     {
+        gt::WindowDesc wdesc{};
+        wdesc.title = "graphics-template";
+        wdesc.width = atoll(gt::CommandArgsParser::Get().getArgumentValue("width", "1024").c_str());
+        wdesc.height = atoll(gt::CommandArgsParser::Get().getArgumentValue("height", "720").c_str());
+        wdesc.fullscreen = false;
+        wdesc.hidden = false;
 
+        auto window = gt::Renderer::Instance().initialize(wdesc);
         spdlog::debug("Initialize FreeImage");
         FreeImage_Initialise();
 
@@ -79,15 +86,14 @@ int entry(int argc, char **argv) {
         renderer.setVertexBuffer(&vbo);
         renderer.setIndexBuffer(&ibo);
 
-        auto window = gt::Renderer::Instance().getWindow();
         // 메인루프
-        while (!glfwWindowShouldClose(window)) {
+        while (window->isRunning()) {
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0, 1, 0, 1);
 
             renderer.drawIndexed(0, 6, 0, 4);
 
-            glfwSwapBuffers(window);
+            window->swapBuffers();
             glfwPollEvents();
         }
 

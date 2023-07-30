@@ -2,10 +2,9 @@
 
 #include "Graphics.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Buffer.h"
 #include "Shader.h"
+#include "Window.h"
 
 #include "Utility/Module.h"
 
@@ -34,10 +33,9 @@ namespace gt {
 
         Shader *activeShader;
 
-        // 임시로 여기다 둠
-        GLFWwindow* window;
-
     public:
+        std::shared_ptr<Window> initialize(const WindowDesc &desc);
+
         void setVertexBuffer(VertexBuffer *buffer);
         void setIndexBuffer(IndexBuffer *buffer);
 
@@ -47,8 +45,6 @@ namespace gt {
         void drawIndexed(uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset, uint32_t vertexCount);
 
         void notifyVertexBufferDestroyed(VertexBuffer *buffer);
-
-        GLFWwindow *getWindow() const { return window; }
 
     protected:
         void onStartUp() override;
