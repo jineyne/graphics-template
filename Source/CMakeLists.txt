@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 # utility
 find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 include (Framework/CMakeSources.cmake)
 
@@ -26,7 +27,7 @@ PRIVATE
 
     glfw OpenGL::GL glad
 
-    spdlog::spdlog_header_only glm::glm)
+    spdlog::spdlog_header_only glm::glm yaml-cpp)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
 target_include_directories(${PROJECT_NAME}

@@ -18,6 +18,7 @@ ECHO [SETUP.BAT] INSTALL LIBRARIES
 "./vcpkg/vcpkg" install physx:x64-windows
 "./vcpkg/vcpkg" install spdlog:x64-windows
 "./vcpkg/vcpkg" install glm:x64-windows
+"./vcpkg/vcpkg" install yaml-cpp:x64-windows
 
 
 "./vcpkg/vcpkg" integrate install
