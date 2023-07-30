@@ -65,4 +65,13 @@ namespace gt {
         glBufferData(getBufferType(), size, data, GL_STATIC_DRAW);
         CHECK_GL_ERROR();
     }
+
+    IndexBuffer::IndexBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER) {}
+
+    void IndexBuffer::write(uint8_t *data, size_t size) {
+        bind();
+
+        glBufferData(getBufferType(), size, data, GL_STATIC_DRAW);
+        CHECK_GL_ERROR();
+    }
 }

@@ -70,4 +70,12 @@ namespace gt {
         void setArrayId(uint32_t &id) { this->arrayId = id; }
         uint32_t getArrayId() const { return this->arrayId; }
     };
+
+    class IndexBuffer : public Buffer {
+    public:
+        IndexBuffer();
+
+    public:
+        void write(uint8_t *data, size_t size) override;
+    };
 }

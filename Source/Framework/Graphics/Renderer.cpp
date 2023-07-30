@@ -38,6 +38,10 @@ namespace gt {
         activeVertexBuffer = buffer;
     }
 
+    void Renderer::setIndexBuffer(IndexBuffer *buffer) {
+        activeIndexBuffer = buffer;
+    }
+
     void Renderer::setShader(Shader *shader) {
         activeShader = shader;
     }
@@ -50,6 +54,20 @@ namespace gt {
         CHECK_GL_ERROR();
 
         glDrawArrays(GL_TRIANGLES, offset, count);
+        CHECK_GL_ERROR();
+    }
+
+    void Renderer::drawIndexed(uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset, uint32_t vertexCount) {
+        activeShader->bind();
+
+        auto vao = findVertexArrayObject(activeVertexBuffer, activeVertexBuffer->getLayout());
+        glBindVertexArray(vao.id);
+        CHECK_GL_ERROR();
+
+        activeIndexBuffer->bind();
+        CHECK_GL_ERROR();
+
+        glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0, vertexOffset);
         CHECK_GL_ERROR();
     }
 

@@ -26,13 +26,18 @@ namespace gt {
 
     private:
         VertexBuffer *activeVertexBuffer;
+        IndexBuffer *activeIndexBuffer;
+
         Shader *activeShader;
 
     public:
         void setVertexBuffer(VertexBuffer *buffer);
+        void setIndexBuffer(IndexBuffer *buffer);
+
         void setShader(Shader *shader);
 
         void draw(uint32_t offset, uint32_t count);
+        void drawIndexed(uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset, uint32_t vertexCount);
         
     public:
         const VertexArrayObject &findVertexArrayObject(VertexBuffer *buffers, const BufferLayout &layout);
