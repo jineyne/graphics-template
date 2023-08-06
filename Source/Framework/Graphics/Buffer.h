@@ -4,8 +4,11 @@
 
 namespace gt {
     enum class BufferType : uint8_t {
-        None = 0, Float, Float2, Float3, Float4,
+        None = 0,
+        Float, Float2, Float3, Float4,
+        Int, Int2, Int3, Int4,
         Color,
+        TexCoord,
     };
 
     class BufferLayout {
@@ -35,6 +38,8 @@ namespace gt {
     public:
         size_t getElementSize() const { return elements.size(); }
         const Element &getElement(int index) const { return elements[index]; }
+
+        uint32_t getStride() const { return stride; }
     };
 
     class Buffer {

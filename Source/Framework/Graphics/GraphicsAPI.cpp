@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "GraphicsAPI.h"
 
 #include <glad/glad.h>
 #include <gl/gl.h>
@@ -14,7 +14,7 @@ namespace gt {
         spdlog::error("GLFW Error ({0}): {1}", error, description);
     }
 
-    size_t Renderer::Hash::operator()(const VertexArrayObject &vao) const {
+    size_t GraphicsAPI::Hash::operator()(const VertexArrayObject &vao) const {
         size_t seed = 0;
 
         std::hash<uint32_t> hasher;
@@ -25,7 +25,7 @@ namespace gt {
         return seed;
     }
 
-    bool Renderer::Equal::operator()(const VertexArrayObject &a, const VertexArrayObject &b) const {
+    bool GraphicsAPI::Equal::operator()(const VertexArrayObject &a, const VertexArrayObject &b) const {
         /*if (a.id != b.id) {
             return false;
         }*/
@@ -44,7 +44,7 @@ namespace gt {
         return true;
     }
 
-    std::shared_ptr<Window> Renderer::initialize(const WindowDesc &desc) {
+    std::shared_ptr<Window> GraphicsAPI::initialize(const WindowDesc &desc) {
         spdlog::debug("Create window: {0}: {1}x{2}", desc.title, desc.width, desc.height);
 
         // 윈도우 생성
@@ -62,19 +62,19 @@ namespace gt {
         return window;
     }
 
-    void Renderer::setVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
+    void GraphicsAPI::setVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
         activeVertexBuffer = buffer;
     }
 
-    void Renderer::setIndexBuffer(const std::shared_ptr<IndexBuffer> &buffer) {
+    void GraphicsAPI::setIndexBuffer(const std::shared_ptr<IndexBuffer> &buffer) {
         activeIndexBuffer = buffer;
     }
 
-    void Renderer::setShader(const std::shared_ptr<Shader> &shader) {
+    void GraphicsAPI::setShader(const std::shared_ptr<Shader> &shader) {
         activeShader = shader;
     }
 
-    void Renderer::draw(uint32_t offset, uint32_t count) {
+    void GraphicsAPI::draw(uint32_t offset, uint32_t count) {
         activeShader->bind();
 
         auto vao = findVertexArrayObject(activeVertexBuffer, activeVertexBuffer->getLayout());
@@ -85,7 +85,7 @@ namespace gt {
         CHECK_GL_ERROR();
     }
 
-    void Renderer::drawIndexed(uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset, uint32_t vertexCount) {
+    void GraphicsAPI::drawIndexed(uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset, uint32_t vertexCount) {
         activeShader->bind();
 
         auto vao = findVertexArrayObject(activeVertexBuffer, activeVertexBuffer->getLayout());
@@ -99,7 +99,7 @@ namespace gt {
         CHECK_GL_ERROR();
     }
 
-    void Renderer::onStartUp() {
+    void GraphicsAPI::onStartUp() {
     // GLFW 초기화 
         spdlog::debug("Initialize GLFW");
         if (!glfwInit()) {
@@ -107,13 +107,13 @@ namespace gt {
         }
     }
     
-    void Renderer::onShutDown() {
+    void GraphicsAPI::onShutDown() {
         // 종료
         spdlog::debug("Dinitialize GLFW");
         glfwTerminate();
     }
 
-    void Renderer::notifyVertexBufferDestroyed(const std::shared_ptr<VertexBuffer> &buffer) {
+    void GraphicsAPI::notifyVertexBufferDestroyed(const std::shared_ptr<VertexBuffer> &buffer) {
         VertexArrayObject vao { 0, { buffer } };
 
         auto findIt = objects.find(vao);
@@ -122,7 +122,7 @@ namespace gt {
         }
     }
 
-    const Renderer::VertexArrayObject &Renderer::findVertexArrayObject(const std::shared_ptr<VertexBuffer> &buffer,
+    const GraphicsAPI::VertexArrayObject &GraphicsAPI::findVertexArrayObject(const std::shared_ptr<VertexBuffer> &buffer,
             const BufferLayout &layout) {
         VertexArrayObject vao { 0, { buffer } };
 
@@ -155,8 +155,19 @@ namespace gt {
                 type = GL_FLOAT;
                 break;
 
+            case BufferType::Int:
+            case BufferType::Int2:
+            case BufferType::Int3:
+            case BufferType::Int4:
+                type = GL_INT;
+                break;
+
             case BufferType::Color:
                 type = GL_UNSIGNED_BYTE;
+                break;
+
+            case BufferType::TexCoord:
+                type = GL_FLOAT;
                 break;
 
             default:
@@ -170,10 +181,10 @@ namespace gt {
                     type == GL_UNSIGNED_INT || type == GL_UNSIGNED_BYTE;
             
             if (isInteger) {
-                glVertexAttribIPointer(stride, element.getComponentCount(), type, element.size, ptr);
+                glVertexAttribIPointer(i, element.getComponentCount(), type, layout.getStride(), ptr);
                 CHECK_GL_ERROR();
             } else {
-                glVertexAttribPointer(stride, element.getComponentCount(), type, GL_FALSE, element.size, ptr);
+                glVertexAttribPointer(i, element.getComponentCount(), type, GL_FALSE, layout.getStride(), ptr);
                 CHECK_GL_ERROR();
             }
             glEnableVertexAttribArray(i);  

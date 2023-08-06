@@ -2,6 +2,8 @@
 
 #include "Graphics.h"
 
+#include "Texture.h"
+
 namespace gt {
     struct ShaderDesc {
         std::string vertexSource;
@@ -22,7 +24,10 @@ namespace gt {
 
     public:
         void compile();
+
         void bind();
+
+        void setTexture(const std::string &name, const std::shared_ptr<Texture> &texture);
 
     private:
         void checkCompileError(uint32_t id);

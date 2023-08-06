@@ -67,6 +67,12 @@ namespace gt {
         CHECK_GL_ERROR();
     }
 
+    void Shader::setTexture(const std::string &name, const std::shared_ptr<Texture> &texture) {
+        int loc = glGetUniformLocation(shaderId, name.c_str());
+        glActiveTexture(GL_TEXTURE0 + loc);
+        bind();
+    }
+
     void Shader::checkCompileError(uint32_t id) {
         int success;
         char log[512];

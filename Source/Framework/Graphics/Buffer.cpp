@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <gl/gl.h>
 
-#include "Renderer.h"
+#include "GraphicsAPI.h"
 
 namespace gt {
     static uint8_t getTypeSize(BufferType type) {
@@ -12,6 +12,15 @@ namespace gt {
         case BufferType::Float2: return 2 * sizeof(float);
         case BufferType::Float3: return 3 * sizeof(float);
         case BufferType::Float4: return 4 * sizeof(float);
+
+        case BufferType::Int: return 1 * sizeof(int);
+        case BufferType::Int2: return 2 * sizeof(int);
+        case BufferType::Int3: return 3 * sizeof(int);
+        case BufferType::Int4: return 4 * sizeof(int);
+
+        case BufferType::Color: return 4 * sizeof(float);
+        case BufferType::TexCoord: return 2 * sizeof(float);
+
         default: return 0;
         }
     }
@@ -29,6 +38,15 @@ namespace gt {
         case BufferType::Float2: return 2;
         case BufferType::Float3: return 3;
         case BufferType::Float4: return 4;
+
+        case BufferType::Int: return 1;
+        case BufferType::Int2: return 2;
+        case BufferType::Int3: return 3;
+        case BufferType::Int4: return 4;
+
+        case BufferType::Color: return 4;
+        case BufferType::TexCoord: return 2;
+
         default: return 0;
         }
     }
@@ -62,7 +80,7 @@ namespace gt {
     VertexBuffer::VertexBuffer() : Buffer(GL_ARRAY_BUFFER) {}
     VertexBuffer::~VertexBuffer() {
         if (!_thisPtr.expired()) {
-            gt::Renderer::Instance().notifyVertexBufferDestroyed(getThisPtr());
+            gt::GraphicsAPI::Instance().notifyVertexBufferDestroyed(getThisPtr());
         }
     }
 

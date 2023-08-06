@@ -9,7 +9,7 @@
 #include "Utility/Module.h"
 
 namespace gt {
-    class Renderer : public Module<Renderer> {
+    class GraphicsAPI : public Module<GraphicsAPI> {
         struct VertexArrayObject {
             uint32_t id;
             std::vector<std::shared_ptr<VertexBuffer>> buffers;

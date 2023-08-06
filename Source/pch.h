@@ -47,9 +47,8 @@ extern "C" {
 }
 
 #include <spdlog/spdlog.h>
-#include <FreeImagePlus.h>
-#include <alc.h>
 
+#include "Utility/EnumHelper.h"
 
 #define DEFINE_THIS_PTR(TYPE) \
     private: std::weak_ptr<TYPE> _thisPtr; \
